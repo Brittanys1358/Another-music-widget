@@ -1,81 +1,86 @@
-<div class="video-container">
-    <img src="https://imgur.com/7O2mG5W.jpg" class="cover-image" id="coverImage" alt="Cover Image">
+<div class="audio-container">
+    <img src="https://imgur.com/7O2mG5W.jpg" class="cover-image" alt="Cover Image">
     
-    <div class="play-icon" id="playIcon" title="Play">▷</div>
-    <div class="pause-icon" id="pauseIcon" title="Pause" style="display:none;">||</div>
-    <div class="rewind-icon" id="rewindIcon" title="Rewind" style="display:none;">↺</div>
+    <audio id="audioPlayer" preload="metadata">
+        <source src="https://drive.google.com/uc?id=12NB7r29qUyf6yF6W8sfZoRh8X16Bk0JU" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     
-    <iframe id="videoPlayer" width="560" height="315" src="https://www.youtube.com/embed/rrfsfWrxfiA?rel=0&controls=0&showinfo=0&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div class="controls">
+        <button id="playButton">▷</button>
+        <button id="pauseButton" style="display:none;">||</button>
+        <input type="range" id="timeScrubber" value="0" step="1">
+    </div>
 </div>
 
 <style>
-    .video-container {
+    .audio-container {
         position: relative;
-        width: 560px; /* Adjust width as needed */
-        height: 315px; /* Adjust height as needed */
+        width: 300px; /* Adjust width as needed */
+        height: 300px; /* Adjust height as needed */
+        overflow: hidden;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
     }
     .cover-image {
         width: 100%; /* Fill the container */
-        height: auto; /* Maintain aspect ratio */
-        position: absolute; /* Position over the iframe */
-        top: 0;
-        left: 0;
-        z-index: 10; /* Ensure it stays on top */
+        height: 100%; /* Fill the container */
+        object-fit: cover; /* Cover the area without stretching */
+        border-radius: 10px; /* Rounded corners */
     }
-    .play-icon, .pause-icon, .rewind-icon {
+    .controls {
         position: absolute;
-        font-size: 48px; /* Adjust size as needed */
-        color: white; /* Adjust color as needed */
-        cursor: pointer; /* Show cursor on hover */
-        z-index: 20; /* Ensure it stays on top of the cover image */
-        background: rgba(0, 0, 0, 0.5); /* Optional background for better visibility */
-        padding: 10px; /* Add some padding around icons */
+        bottom: 20px; /* Adjust position from the bottom */
+        left: 10px; /* Adjust left position */
+        right: 10px; /* Adjust right position */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    button {
+        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+        color: white; /* Text color */
+        border: none; /* Remove border */
         border-radius: 5px; /* Rounded corners */
+        padding: 10px; /* Padding around the buttons */
+        cursor: pointer; /* Pointer cursor on hover */
     }
-    .play-icon {
-        top: 40%; /* Adjust vertical positioning */
-        left: 40%; /* Center horizontally */
+    button:hover {
+        background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
     }
-    .pause-icon {
-        top: 40%; /* Adjust vertical positioning */
-        left: 40%; /* Center horizontally */
-    }
-    .rewind-icon {
-        top: 40%; /* Adjust vertical positioning */
-        left: 20%; /* Adjust horizontal positioning */
-    }
-    iframe {
-        width: 100%;
-        height: 100%;
-        display: none; /* Hide iframe initially */
+    #timeScrubber {
+        flex: 1; /* Take remaining space */
+        margin: 0 10px; /* Margin on the sides */
     }
 </style>
 
 <script>
-    const coverImage = document.getElementById('coverImage');
-    const playIcon = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const rewindIcon = document.getElementById('rewindIcon');
-    const videoPlayer = document.getElementById('videoPlayer');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const timeScrubber = document.getElementById('timeScrubber');
 
-    playIcon.addEventListener('click', () => {
-        coverImage.style.display = 'none'; // Hide cover image
-        playIcon.style.display = 'none'; // Hide play icon
-        pauseIcon.style.display = 'block'; // Show pause icon
-        rewindIcon.style.display = 'block'; // Show rewind icon
-        videoPlayer.style.display = 'block'; // Show video player
-        videoPlayer.src += "&autoplay=1"; // Start playing the video on click
+    // Play button event
+    playButton.addEventListener('click', () => {
+        audioPlayer.play();
+        playButton.style.display = 'none'; // Hide play button
+        pauseButton.style.display = 'inline'; // Show pause button
     });
 
-    pauseIcon.addEventListener('click', () => {
-        videoPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); // Pause the video
-        pauseIcon.style.display = 'none'; // Hide pause icon
-        playIcon.style.display = 'block'; // Show play icon again
+    // Pause button event
+    pauseButton.addEventListener('click', () => {
+        audioPlayer.pause();
+        pauseButton.style.display = 'none'; // Hide pause button
+        playButton.style.display = 'inline'; // Show play button
     });
 
-    rewindIcon.addEventListener('click', () => {
-        videoPlayer.contentWindow.postMessage('{"event":"command","func":"seekTo","args":[0]}', '*'); // Rewind to the start
-        pauseIcon.style.display = 'none'; // Hide pause icon
-        playIcon.style.display = 'block'; // Show play icon again
+    // Update the scrubber as the audio plays
+    audioPlayer.addEventListener('timeupdate', () => {
+        timeScrubber.value = (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
+    });
+
+    // Scrubber change event to seek audio
+    timeScrubber.addEventListener('input', () => {
+        audioPlayer.currentTime = (timeScrubber.value / 100) * audioPlayer.duration;
     });
 </script>
