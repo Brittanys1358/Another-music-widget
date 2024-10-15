@@ -1,147 +1,21 @@
-<div class="audio-container">
-    <img src="https://imgur.com/7O2mG5W.jpg" class="cover-image" alt="Cover Image">
-    
-    <div id="player"></div>
-    
-    <div class="controls">
-        <button id="playButton">▷</button>
-        <button id="pauseButton" style="display:none;">||</button>
-        <input type="range" id="timeScrubber" value="0" step="1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Music Widget</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="music-widget">
+        <img src="https://imgur.com/7O2mG5W.png" alt="Ambient Music" class="cover-image">
+        <audio id="audio" src="https://www.youtube.com/watch?v=rrfsfWrxfiA" preload="metadata"></audio>
+        <div class="controls">
+            <button id="rewind" class="control-btn">↺</button>
+            <button id="play-pause" class="control-btn">▷</button>
+        </div>
+        <input type="range" id="scrubber" class="scrubber" value="0">
     </div>
-</div>
-
-<style>
-    .audio-container {
-        position: relative;
-        width: 300px; /* Adjust width as needed */
-        height: 300px; /* Adjust height as needed */
-        overflow: hidden;
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
-    }
-    .cover-image {
-        width: 100%; /* Fill the container */
-        height: 100%; /* Fill the container */
-        object-fit: cover; /* Cover the area without stretching */
-        border-radius: 10px; /* Rounded corners */
-    }
-    .controls {
-        position: absolute;
-        bottom: 20px; /* Adjust position from the bottom */
-        left: 10px; /* Adjust left position */
-        right: 10px; /* Adjust right position */
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    button {
-        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-        color: white; /* Text color */
-        border: none; /* Remove border */
-        border-radius: 5px; /* Rounded corners */
-        padding: 10px; /* Padding around the buttons */
-        cursor: pointer; /* Pointer cursor on hover */
-    }
-    button:hover {
-        background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
-    }
-
-    #timeScrubber {
-        -webkit-appearance: none; /* Remove default styling for WebKit browsers */
-        appearance: none; /* Remove default styling */
-        width: 100%; /* Full width */
-        height: 8px; /* Height of the track */
-        background: rgba(255, 255, 255, 0.2); /* Lighter white track with transparency */
-        border-radius: 5px; /* Rounded corners */
-        outline: none; /* Remove outline */
-    }
-
-    #timeScrubber::-webkit-slider-thumb {
-        -webkit-appearance: none; /* Remove default styling */
-        appearance: none; /* Remove default styling */
-        width: 20px; /* Width of the thumb */
-        height: 20px; /* Height of the thumb */
-        border-radius: 50%; /* Make the thumb round */
-        background: white; /* White thumb color */
-        cursor: pointer; /* Pointer cursor on hover */
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for the thumb */
-    }
-
-    #timeScrubber::-moz-range-thumb {
-        width: 20px; /* Width of the thumb */
-        height: 20px; /* Height of the thumb */
-        border-radius: 50%; /* Make the thumb round */
-        background: white; /* White thumb color */
-        cursor: pointer; /* Pointer cursor on hover */
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for the thumb */
-    }
-
-    #timeScrubber::-ms-thumb {
-        width: 20px; /* Width of the thumb */
-        height: 20px; /* Height of the thumb */
-        border-radius: 50%; /* Make the thumb round */
-        background: white; /* White thumb color */
-        cursor: pointer; /* Pointer cursor on hover */
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for the thumb */
-    }
-</style>
-
-<script>
-    // Load the IFrame Player API code asynchronously.
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    // Create a variable to store the player
-    var player;
-
-    // This function creates an <iframe> (and YouTube player)
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            height: '0', // Hide the iframe
-            width: '0', // Hide the iframe
-            videoId: 'rrfsfWrxfiA', // Your video ID
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-
-    // The API will call this function when the video player is ready.
-    function onPlayerReady(event) {
-        // Update scrubber value when time changes
-        player.addEventListener("onStateChange", function(state) {
-            if (state.data === YT.PlayerState.PLAYING) {
-                setInterval(function() {
-                    const currentTime = player.getCurrentTime();
-                    const duration = player.getDuration();
-                    const scrubber = document.getElementById('timeScrubber');
-                    scrubber.value = (currentTime / duration) * 100 || 0;
-                }, 1000);
-            }
-        });
-    }
-
-    // Event listener for the scrubber
-    document.getElementById('timeScrubber').addEventListener('input', function() {
-        const scrubberValue = this.value;
-        const duration = player.getDuration();
-        player.seekTo((scrubberValue / 100) * duration, true);
-    });
-
-    // Play button event
-    document.getElementById('playButton').addEventListener('click', function() {
-        player.playVideo();
-        this.style.display = 'none'; // Hide play button
-        document.getElementById('pauseButton').style.display = 'inline'; // Show pause button
-    });
-
-    // Pause button event
-    document.getElementById('pauseButton').addEventListener('click', function() {
-        player.pauseVideo();
-        this.style.display = 'none'; // Hide pause button
-        document.getElementById('playButton').style.display = 'inline'; // Show play button
-    });
-</script>
+    <script src="script.js"></script>
+</body>
+</html>
