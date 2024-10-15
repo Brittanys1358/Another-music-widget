@@ -1,38 +1,81 @@
 <div class="video-container">
-    <img src="https://imgur.com/7O2mG5W.jpg" class="custom-play-button" id="playBtn" alt="Play Button">
-    <iframe id="videoPlayer" width="560" height="315" src="https://www.youtube.com/embed/rrfsfWrxfiA?rel=0&controls=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <img src="https://imgur.com/7O2mG5W.jpg" class="cover-image" id="coverImage" alt="Cover Image">
+    
+    <div class="play-icon" id="playIcon" title="Play">▷</div>
+    <div class="pause-icon" id="pauseIcon" title="Pause" style="display:none;">||</div>
+    <div class="rewind-icon" id="rewindIcon" title="Rewind" style="display:none;">↺</div>
+    
+    <iframe id="videoPlayer" width="560" height="315" src="https://www.youtube.com/embed/rrfsfWrxfiA?rel=0&controls=0&showinfo=0&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
 <style>
     .video-container {
         position: relative;
-        width: 560px;
-        height: 315px;
+        width: 560px; /* Adjust width as needed */
+        height: 315px; /* Adjust height as needed */
     }
-    .custom-play-button {
+    .cover-image {
+        width: 100%; /* Fill the container */
+        height: auto; /* Maintain aspect ratio */
+        position: absolute; /* Position over the iframe */
+        top: 0;
+        left: 0;
+        z-index: 10; /* Ensure it stays on top */
+    }
+    .play-icon, .pause-icon, .rewind-icon {
         position: absolute;
-        width: 100px;
-        height: 100px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-        z-index: 10;
+        font-size: 48px; /* Adjust size as needed */
+        color: white; /* Adjust color as needed */
+        cursor: pointer; /* Show cursor on hover */
+        z-index: 20; /* Ensure it stays on top of the cover image */
+        background: rgba(0, 0, 0, 0.5); /* Optional background for better visibility */
+        padding: 10px; /* Add some padding around icons */
+        border-radius: 5px; /* Rounded corners */
+    }
+    .play-icon {
+        top: 40%; /* Adjust vertical positioning */
+        left: 40%; /* Center horizontally */
+    }
+    .pause-icon {
+        top: 40%; /* Adjust vertical positioning */
+        left: 40%; /* Center horizontally */
+    }
+    .rewind-icon {
+        top: 40%; /* Adjust vertical positioning */
+        left: 20%; /* Adjust horizontal positioning */
     }
     iframe {
-        display: none;
         width: 100%;
         height: 100%;
+        display: none; /* Hide iframe initially */
     }
 </style>
 
 <script>
-    const playBtn = document.getElementById('playBtn');
+    const coverImage = document.getElementById('coverImage');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const rewindIcon = document.getElementById('rewindIcon');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    playBtn.addEventListener('click', () => {
-        playBtn.style.display = 'none';
-        videoPlayer.style.display = 'block';
-        videoPlayer.src += "&autoplay=1";
+    playIcon.addEventListener('click', () => {
+        coverImage.style.display = 'none'; // Hide cover image
+        playIcon.style.display = 'none'; // Hide play icon
+        pauseIcon.style.display = 'block'; // Show pause icon
+        rewindIcon.style.display = 'block'; // Show rewind icon
+        videoPlayer.style.display = 'block'; // Show video player
+        videoPlayer.src += "&autoplay=1"; // Start playing the video on click
+    });
+
+    pauseIcon.addEventListener('click', () => {
+        videoPlayer.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); // Pause the video
+        pauseIcon.style.display = 'none'; // Hide pause icon
+        playIcon.style.display = 'block'; // Show play icon again
+    });
+
+    rewindIcon.addEventListener('click', () => {
+        videoPlayer.contentWindow.postMessage('{"event":"command","func":"seekTo","args":[0]}', '*'); // Rewind to the start
+        pauseIcon.style.display = 'none'; // Hide pause icon
+        playIcon.style.display = 'block'; // Show play icon again
     });
 </script>
