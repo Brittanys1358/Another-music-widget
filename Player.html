@@ -1,0 +1,38 @@
+<div class="video-container">
+    <img src="https://imgur.com/7O2mG5W.jpg" class="custom-play-button" id="playBtn" alt="Play Button">
+    <iframe id="videoPlayer" width="560" height="315" src="https://www.youtube.com/embed/rrfsfWrxfiA?rel=0&controls=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
+
+<style>
+    .video-container {
+        position: relative;
+        width: 560px;
+        height: 315px;
+    }
+    .custom-play-button {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        z-index: 10;
+    }
+    iframe {
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<script>
+    const playBtn = document.getElementById('playBtn');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    playBtn.addEventListener('click', () => {
+        playBtn.style.display = 'none';
+        videoPlayer.style.display = 'block';
+        videoPlayer.src += "&autoplay=1";
+    });
+</script>
