@@ -2,7 +2,7 @@
     <img src="https://imgur.com/7O2mG5W.jpg" class="cover-image" alt="Cover Image">
     
     <audio id="audioPlayer" preload="metadata">
-        <source src="https://drive.google.com/uc?id=12NB7r29qUyf6yF6W8sfZoRh8X16Bk0JU.mp3" type="audio/mpeg">
+        <source src="https://drive.google.com/uc?export=download&id=12NB7r29qUyf6yF6W8sfZoRh8X16Bk0JU" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     
@@ -48,9 +48,41 @@
     button:hover {
         background-color: rgba(0, 0, 0, 0.8); /* Darker on hover */
     }
+
     #timeScrubber {
-        flex: 1; /* Take remaining space */
-        margin: 0 10px; /* Margin on the sides */
+        -webkit-appearance: none; /* Remove default styling for WebKit browsers */
+        appearance: none; /* Remove default styling */
+        width: 100%; /* Full width */
+        height: 8px; /* Height of the track */
+        background: rgba(255, 255, 0, 0.5); /* Yellow track with some transparency */
+        border-radius: 5px; /* Rounded corners */
+        outline: none; /* Remove outline */
+    }
+
+    #timeScrubber::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Remove default styling */
+        appearance: none; /* Remove default styling */
+        width: 16px; /* Width of the thumb */
+        height: 16px; /* Height of the thumb */
+        border-radius: 50%; /* Make the thumb round */
+        background: yellow; /* Yellow thumb color */
+        cursor: pointer; /* Pointer cursor on hover */
+    }
+
+    #timeScrubber::-moz-range-thumb {
+        width: 16px; /* Width of the thumb */
+        height: 16px; /* Height of the thumb */
+        border-radius: 50%; /* Make the thumb round */
+        background: yellow; /* Yellow thumb color */
+        cursor: pointer; /* Pointer cursor on hover */
+    }
+
+    #timeScrubber::-ms-thumb {
+        width: 16px; /* Width of the thumb */
+        height: 16px; /* Height of the thumb */
+        border-radius: 50%; /* Make the thumb round */
+        background: yellow; /* Yellow thumb color */
+        cursor: pointer; /* Pointer cursor on hover */
     }
 </style>
 
